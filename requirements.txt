@@ -1,0 +1,8 @@
+streamlit
+langchain
+langchain-community
+ollama
+faiss-cpu
+python-dotenv
+validators
+playwright
