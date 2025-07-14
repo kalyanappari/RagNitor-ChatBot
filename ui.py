@@ -142,7 +142,6 @@ def user_input_box():
     if st.session_state.show_menu:
         with st.expander("📎 Upload or Link"):
             uploaded_file, url_input = file_url_menu(True)
-            append_to_memory = st.checkbox("📎 Append to previous memory", value=True)
             
             if uploaded_file or url_input:
                 st.session_state.show_menu = False
@@ -155,11 +154,11 @@ def user_input_box():
         st.rerun()
 
     return (
-        st.session_state.user_input if st.session_state.responding else None,
-        uploaded_file,
-        url_input,
-        append_to_memory
-    )
+    st.session_state.user_input if st.session_state.responding else None,
+    uploaded_file,
+    url_input
+)
+
 
 
 # 👉 New Chat Button
