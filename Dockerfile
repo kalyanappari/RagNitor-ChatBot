@@ -18,6 +18,9 @@ RUN pip install --upgrade pip
 # Install required Python packages
 RUN pip install -r requirements.txt
 
+# Set environment variable (used for runtime or passed via --env or .env file)
+ENV GROQ_API_KEY=${GROQ_API_KEY}
+
 # Expose Streamlit's default port
 EXPOSE 8501
 
