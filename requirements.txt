@@ -1,8 +1,9 @@
 streamlit
 langchain
 langchain-community
-ollama
+langchain-core
 faiss-cpu
 python-dotenv
 validators
-playwright
+requests
+tqdm
