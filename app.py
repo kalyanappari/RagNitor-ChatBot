@@ -25,12 +25,15 @@ from ui import (
 )
 
 # --- User Identification Setup ---
+# ✅ Replacement for deprecated experimental_get/set_query_params
 if "user_id" not in st.session_state:
-    if "user_id" in st.experimental_get_query_params():
-        st.session_state.user_id = st.experimental_get_query_params()["user_id"][0]
+    params = st.query_params  # replaces experimental_get_query_params()
+    if "user_id" in params:
+        st.session_state.user_id = params["user_id"]
     else:
-        st.session_state.user_id = str(uuid.uuid4())
-        st.experimental_set_query_params(user_id=st.session_state.user_id)
+        user_id = str(uuid.uuid4())
+        st.session_state.user_id = user_id
+        st.query_params.update(user_id=user_id)  # replaces experimental_set_query_params()
 
 USER_ID = st.session_state.user_id
 
