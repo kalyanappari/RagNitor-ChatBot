@@ -6,13 +6,14 @@ import tempfile
 import validators
 import json
 import os
+import uuid
 
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA, LLMChain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.memory import ConversationBufferWindowMemory
 from langchain_groq import ChatGroq
-from langchain_community.embeddings import OllamaEmbeddings  # Keep using local embedding model
+from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, WebBaseLoader
 from langchain_core.messages import HumanMessage, AIMessage
@@ -22,6 +23,16 @@ from ui import (
     new_chat_button, render_chat_sessions, create_new_chat_session,
     clean_title_text
 )
+
+# --- User Identification Setup ---
+if "user_id" not in st.session_state:
+    if "user_id" in st.experimental_get_query_params():
+        st.session_state.user_id = st.experimental_get_query_params()["user_id"][0]
+    else:
+        st.session_state.user_id = str(uuid.uuid4())
+        st.experimental_set_query_params(user_id=st.session_state.user_id)
+
+USER_ID = st.session_state.user_id
 
 # --- Config ---
 st.set_page_config(page_title="🧠 RAGnitor", layout="wide")
@@ -33,7 +44,7 @@ st.markdown("""
     </h1>
 """, unsafe_allow_html=True)
 
-SAVE_DIR = "chat_histories"
+SAVE_DIR = f"chat_histories/{USER_ID}"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 def load_chat_history(session_id, k=10):
