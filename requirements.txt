@@ -8,3 +8,5 @@ validators
 requests
 tqdm
 langchain-groq
+beautifulsoup4
+pypdf
