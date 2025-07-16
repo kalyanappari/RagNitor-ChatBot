@@ -176,13 +176,18 @@ elif url_input and validators.url(url_input):
 
 if docs:
     chunks = RecursiveCharacterTextSplitter(chunk_size=600, chunk_overlap=60).split_documents(docs)
-    embeddings = OllamaEmbeddings(model="nomic-embed-text")
-    st.session_state.vectorstore = FAISS.from_documents(chunks, embeddings)
-    st.session_state.retriever = st.session_state.vectorstore.as_retriever(search_kwargs={"k": 8})
 
-    qa_prompt_template = """
+    if not chunks:
+        st.error("❌ Document was empty or couldn't be parsed into chunks.")
+    else:
+        try:
+            embeddings = OllamaEmbeddings(model="nomic-embed-text")
+            st.session_state.vectorstore = FAISS.from_documents(chunks, embeddings)
+            st.session_state.retriever = st.session_state.vectorstore.as_retriever(search_kwargs={"k": 8})
+
+            qa_prompt_template = """
 You are a helpful AI assistant. Answer the question based on the provided context or your general knowledge.
-If the context does not contain enough information to directly answer the question, then use your general knowledge to answer.
+If the context does not contain enough information to directly answer the question, then do forgot about the content and give the normal response related to the user promt.
 
 Context:
 {context}
@@ -190,16 +195,19 @@ Context:
 Question: {question}
 Assistant:
 """
-    QA_CHAIN_PROMPT = PromptTemplate.from_template(qa_prompt_template)
+            QA_CHAIN_PROMPT = PromptTemplate.from_template(qa_prompt_template)
 
-    st.session_state.rag_chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        retriever=st.session_state.retriever,
-        memory=memory,
-        chain_type="stuff",
-        return_source_documents=False,
-        chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
-    )
+            st.session_state.rag_chain = RetrievalQA.from_chain_type(
+                llm=llm,
+                retriever=st.session_state.retriever,
+                memory=memory,
+                chain_type="stuff",
+                return_source_documents=False,
+                chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
+            )
+        except Exception as e:
+            st.error(f"❌ Failed to create vector store: {e}")
+
 
 if user_input:
     try:
