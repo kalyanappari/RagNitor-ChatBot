@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+*.db
+.env
+*.log
+*.pdf
+.DS_Store
+.vscode/
+*.zip
