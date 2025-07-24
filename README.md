@@ -38,5 +38,24 @@ streamlit run app/main.py
 docker build -t ragnitor .
 docker run -p 8501:8501 ragnitor
 
+### File Upload Tips
+Upload first, then query for best RAG output.
+
+Ask specific queries like:
+
+"Summarize this document"
+
+"What are the key points?"
+
+No upload? It'll work in LLM-only mode.
+
+### Roadmap
+HuggingFace model switch
+
+OAuth login and named chat memory
+
+Persistent vector DB support
+
+Image and multimodal integration
 
 
